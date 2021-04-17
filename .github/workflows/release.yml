@@ -1,0 +1,32 @@
+name: Release
+
+on: workflow_dispatch
+
+jobs:
+  release:
+    name: Perform release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js environment
+          uses: actions/setup-node@v2
+          with:
+            node-version: 14
+            registry-url: https://registry.npmjs.org/
+      
+      - name: Get artifact name and version
+        run: |
+          echo IMAGE_NAME=$(node -p "require('./package.json').name") >> $GITHUB_ENV
+          echo IMAGE_VERSION=$(node -p "require('./package.json').version") >> $GITHUB_ENV
+
+      - name: Build and push
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: genericmmo/${{ env.IMAGE_NAME }}
+          tags: ${{ env.IMAGE_VERSION }}
+          push: true
