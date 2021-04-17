@@ -1,5 +1,5 @@
 {
-  "name": "mmo-api",
+  "name": "cartographer-service",
   "version": "0.0.1",
   "scripts": {
     "serve": "npm run build && npm start",
